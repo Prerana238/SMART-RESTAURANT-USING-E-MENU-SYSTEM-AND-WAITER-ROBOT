@@ -1,0 +1,85 @@
+#include <VirtualWire.h> 
+#define Buzzer 2 
+#include <LiquidCrystal_I2C.h> 
+LiquidCrystal_I2C lcd(0x27, 16, 2);  
+ 
+int i; 
+char tempChar[10]; 
+int f=1; 
+struct package 
+{ 
+int id = 0; 
+int a = 0; 
+int b = 0; 
+int c = 0; 
+int d = 0; 
+}; 
+typedef struct package Package; 
+Package data; 
+void setup() 
+{ 
+pinMode(Buzzer,OUTPUT); 
+vw_set_ptt_inverted(true); // Required for DR3100  
+vw_set_rx_pin(12);  
+vw_setup(5000); // Bits per sec  
+Serial.begin(9600);  
+vw_rx_start(); // Start the receiver PLL running  
+lcd.init(); 
+lcd.backlight(); 
+lcd.setCursor(0,0); 
+ 
+lcd.print("welcome to"); 
+lcd.setCursor(8,1); 
+lcd.print("MFC"); 
+delay(2000); 
+} 
+void loop() 
+{ 
+uint8_t buf[sizeof(data)]; 
+uint8_t buflen = sizeof(data); 
+if (vw_have_message()) // Is there a packet for us?  
+{ 
+f=1; 
+vw_get_message(buf, &buflen); 
+memcpy(&data, &buf,buflen); 
+int idd = data.id; 
+int Adata = data.a; 
+int Bdata = data.b; 
+int Cdata = data.c; 
+int Ddata = data.d; 
+Serial.println(Adata); 
+Serial.println(Bdata); 
+Serial.println(Cdata); 
+Serial.println(Ddata); 
+if(idd==6) 
+
+{ 
+digitalWrite(Buzzer, HIGH); 
+delay (500); 
+digitalWrite(Buzzer, LOW); 
+lcd.clear(); 
+lcd.setCursor(0,0); 
+lcd.print("Table: 1"); 
+delay(1000); 
+lcd.clear(); 
+lcd.setCursor(0,0); 
+lcd.print("DOSA:"+String(Adata)); 
+lcd.setCursor(8,0); 
+lcd.print("IDLY:"+String(Bdata)); 
+lcd.setCursor(0,1); 
+lcd.print("POHA:"+String(Cdata)); 
+lcd.setCursor(8,1); 
+lcd.print("PURI:"+String(Ddata)); 
+delay(5000); 
+lcd.clear(); 
+} 
+} 
+if(f==1) 
+{ 
+f = 0; 
+
+lcd.clear(); 
+lcd.setCursor(0,0); 
+lcd.print(" No orders");  
+} 
+}
