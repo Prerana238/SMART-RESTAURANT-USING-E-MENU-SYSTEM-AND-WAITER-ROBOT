@@ -1,4 +1,4 @@
-# SMART-RESTAURANT-USING-E-MENU-SYSTEM-AND-WAITER-ROBOT
+# SMART-RESTAURANT-USING-LCD-SYSTEM-AND-WAITER-ROBOT
 Developed an automated restaurant system using Arduino Uno/Nano, TFT touch display, and RF modules to digitize food ordering.
 
 Designed an interactive e-menu interface with real-time billing and integrated RF communication to transmit orders wirelessly to the kitchen.
